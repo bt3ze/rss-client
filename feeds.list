@@ -22,7 +22,6 @@ http://feeds.reuters.com/Reuters/domesticNews
 http://feeds.reuters.com/Reuters/worldNews
 http://topics.nytimes.com/top/opinion/editorialsandoped/editorials/index.html?rss=1
 http://topics.nytimes.com/top/opinion/editorialsandoped/oped/contributors/index.html?rss=1
-http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
 http://rss.nytimes.com/services/xml/rss/nyt/InternationalHome.xml
 http://rss.nytimes.com/services/xml/rss/nyt/World.xml
 http://rss.nytimes.com/services/xml/rss/nyt/US.xml
@@ -101,7 +100,6 @@ http://feeds.bbci.co.uk/news/technology/rss.xml
 http://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml
 http://feeds.feedburner.com/TechCrunch/
 https://news.google.com/news/feeds?pz=1&cf=all&ned=us&hl=en&output=rss
-http://www.huffingtonpost.com/feeds/verticals/arts/index.xml
 http://www.huffingtonpost.com/feeds/verticals/books/index.xml
 http://www.huffingtonpost.com/feeds/verticals/comedy/index.xml
 http://www.huffingtonpost.com/feeds/verticals/education/index.xml
