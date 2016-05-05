@@ -64,5 +64,5 @@ def parseurl(url):
 
 
 if __name__ == "__main__":
-    print "Hello World! Test 123"
+    print ("Hello World! Test 123")
     app.run(debug=True,host='0.0.0.0')
