@@ -12,8 +12,8 @@ app = Flask(__name__)
 
 
 # this is a list of feeds that work when we request them
-#LST_FILE = "goodfeeds.list"
-LST_FILE = "shortfeeds.list"
+LST_FILE = "goodfeeds.list"
+#LST_FILE = "shortfeeds.list"
 
 
 # there are three noteworthy objects for our rss reader:
@@ -64,4 +64,5 @@ def parseurl(url):
 
 
 if __name__ == "__main__":
+    print "Hello World! Test 123"
     app.run(debug=True,host='0.0.0.0')
