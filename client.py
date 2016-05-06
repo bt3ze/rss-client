@@ -52,10 +52,10 @@ def periodic_update(reader):
 
 @app.route("/")
 def startup():
-    #print("Hello World!")
-    #reader = feedreader(LST_FILE)
-    #feeds = reader.feeds
-    #periodic_update(reader)
+    print("Start!")
+    reader = feedreader(LST_FILE)
+    feeds = reader.feeds
+    periodic_update(reader)
     return "Hello World!"
 
 @app.route("/parseurl/<url>")
