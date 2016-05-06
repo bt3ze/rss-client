@@ -33,7 +33,7 @@ class newsitem:
 
     def retrieve(self):
         if not self.retrieved:
-            #print("retrieve: ",self.url)
+            print("retrieve: ",self.url)
             a = self.article
             a.download()
             if a.html == "":
