@@ -75,7 +75,7 @@ class rssfeed:
             else:
                 self.fetched_urls.append(news_item.url)
                 news_item.retrieve()
-            print ("update keywords: ",news_item.keywords)
+            #print ("update keywords: ",news_item.keywords)
 
         new_list = self.get_news()        
         return map(fetch_fn,new_list)
@@ -90,7 +90,7 @@ class rssfeed:
                     print ("retrieve failed: ",news_item.url)
                 else:
                     self.fetched_urls.append(news_item.url)
-                    #print ("update keywords: ",news_item.keywords)
+                    print ("update keywords: ",news_item.keywords)
                     return { "url": news_item.url, "keywords": news_item.keywords, "item":news_item }
 
         #print("Fast Update!")
