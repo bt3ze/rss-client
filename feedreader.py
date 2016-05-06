@@ -105,12 +105,12 @@ class feedreader:
 
 
     def read_urls(self):
-        #print("read urls")
+        print("read urls")
         f = open(self.fname,'r')
         for line in f.readlines():
             url = parse_line(line)
             self.feed_urls.append(url)
-            #print(url),
+            print(url),
         f.close()
 
     def construct_feeds_slow(self):
@@ -127,7 +127,7 @@ class feedreader:
 
 
     def construct_feeds(self):
-        #print("construct feeds", self.feed_urls)        
+        print("construct feeds", self.feed_urls)        
         self.extend_feeds(self.feed_urls)
 
     def extend_feeds(self,urllist):
