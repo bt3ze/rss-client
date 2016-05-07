@@ -3,17 +3,30 @@
 from newssource import newsitem
 from feedreader import feedreader
 from datetime import date
+import json
 import time
 from utils import do_every, flatten
 from functools import reduce
+import ipaddress, sys, tldextract
 
 from flask import Flask
 app = Flask(__name__)
 
+try:
+    # this just tests that the input address is valid
+    ipaddr = ipaddress.ip_address(sys.argv[1])
+    
+    dest_ip = sys.argv[1]
+    dest_port = sys.argv[2]
+except Exception as e:
+    print(e)
+    exit(1)
 
 # this is a list of feeds that work when we request them
 #LST_FILE = "goodfeeds.list"
 LST_FILE = "shortfeeds.list"
+
+
 
 
 # there are three noteworthy objects for our rss reader:
@@ -25,6 +38,13 @@ LST_FILE = "shortfeeds.list"
 # it will create an "rssfeed" that polls the source url and retrieves news stories
 
 
+def send_to_db(data_):
+    try:
+        requests.post(dest_ip+":"+dest_port,data=json.dumps(data_))
+        return 1
+    except Exception as e:
+        print(e)
+        return 0
 
 
 #print("feeds: ",feeds)
@@ -35,10 +55,13 @@ def periodic_update(reader):
     print("time: ",time.strftime("%H:%M:%S"))
     newsitems = flatten(reader.fast_update())
     items = [n['item'] for n in newsitems ]
-    texts = [n.article.text for n in items]
-    #size = reduce(lambda a,b: a + len(b.html), [n['item'] for n in newsitems ],0)
-    size = reduce(lambda a,b: a + len(b), texts,0)
-    print("\n\n\n end of round. size: " + str(size) + " \n\n\n")
+    for i in range(0,len(items)):
+        url = items[i].url
+        print( { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain })
+    
+    #size = reduce(lambda a,b: a + len(b), texts,0)
+    #print("\n\n\n end of round. size: " + str(size) + " \n\n\n")
+
     #print ([i.html for i in items])
     #print (items)
     #print (texts)
