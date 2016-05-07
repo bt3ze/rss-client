@@ -40,7 +40,7 @@ LST_FILE = "shortfeeds.list"
 
 def send_to_db(data_):
     try:
-        requests.post(dest_ip+":"+dest_port,data=json.dumps(data_))
+        requests.post(dest_ip+":"+dest_port+"/new",data=json.dumps(data_))
         return 1
     except Exception as e:
         print(e)
@@ -52,19 +52,17 @@ def send_to_db(data_):
 def periodic_update(reader):
     # now we have a list of rssfeeds in the "feeds" variable
     # we can use them to get the news
+    
     print("time: ",time.strftime("%H:%M:%S"))
     newsitems = flatten(reader.fast_update())
     items = [n['item'] for n in newsitems ]
+    
     for i in range(0,len(items)):
         url = items[i].url
-        print( { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain })
+        digest = { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain })
+        print(digest)
+        #send_to_db(digest)
     
-    #size = reduce(lambda a,b: a + len(b), texts,0)
-    #print("\n\n\n end of round. size: " + str(size) + " \n\n\n")
-
-    #print ([i.html for i in items])
-    #print (items)
-    #print (texts)
     #print("\n\n\n end of round. \n\n\n")
 
         
