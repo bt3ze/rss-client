@@ -59,7 +59,7 @@ def periodic_update(reader):
     
     for i in range(0,len(items)):
         url = items[i].url
-        digest = { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain })
+        digest = { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain }
         print(digest)
         #send_to_db(digest)
     
