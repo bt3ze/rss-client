@@ -40,14 +40,15 @@ LST_FILE = "shortfeeds.list"
 
 def send_to_db(data_):
     try:
-        requests.post(dest_ip+":"+dest_port+"/new",data=json.dumps(data_))
+        r = requests.post("http://"+dest_ip+":"+dest_port+"/new",json=json.dumps(data_),headers=headers)
+        print(r)
         return 1
     except Exception as e:
         print(e)
         return 0
 
-
 #print("feeds: ",feeds)
+
 
 def periodic_update(reader):
     # now we have a list of rssfeeds in the "feeds" variable
@@ -60,8 +61,8 @@ def periodic_update(reader):
     for i in range(0,len(items)):
         url = items[i].url
         digest = { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain }
-        print(digest)
-        #send_to_db(digest)
+        print(json.dumps(digest))
+        send_to_db(digest)
     
     #print("\n\n\n end of round. \n\n\n")
 
