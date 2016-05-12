@@ -39,7 +39,7 @@ class newsitem:
             a.download()
             if a.html == "":
                 print("error: download failed")
-                return 0
+                return self
             a.parse()
             a.nlp()
             self.retrieved = 1

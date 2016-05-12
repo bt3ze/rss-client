@@ -164,7 +164,7 @@ class feedreader:
 
     def send_to_db(self,digest):
          try:
-             r = requests.post("http://"+self.dest_db+":"+self.dest_port+"/new",json=json.dumps(digest),headers=HEADERS)
+             r = requests.post("http://"+self.dest_db+":"+self.dest_port+"/new",json=json.dumps(digest),headers=HEADERS, timeout=TIMEOUT)
              print(r)
              return [1,digest["url"]]
          except Exception as e:
