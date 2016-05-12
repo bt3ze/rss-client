@@ -15,6 +15,7 @@ from collections import deque
 
 URL_LIST_SIZE = 50
 
+
 class newsitem:
     def __init__(self, title_, url_, time_):
         self.title = title_
@@ -88,6 +89,7 @@ class rssfeed:
                 success = news_item.retrieve()
                 if success == 0:
                     print ("retrieve failed: ",news_item.url)
+                    return {"url":"0.0.0.0", "item": news_item}
                 else:
                     self.fetched_urls.append(news_item.url)
                     print ("update keywords: ",news_item.keywords)
@@ -96,3 +98,6 @@ class rssfeed:
         #print("Fast Update!")
         new_list = self.get_news()
         return threaded_map(fetch_fn,new_list)
+
+
+        

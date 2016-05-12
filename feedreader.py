@@ -7,12 +7,14 @@ from datetime import date
 import datetime, time
 import newssource
 import parse
+import tldextract, json
 
 from utils import threaded_map, apply_max, ret_max
 
 import queue
 
-HEADERS = {'user-agent':'bt-rss-reader/0.1'}
+HEADERS = {'user-agent':'bt-rss-reader/0.1','Content-type':'application/json','Accept':'text/plain'}
+#headers={}
 TIMEOUT = 0.9
 LST_FILE = "feeds.list"
 DEBUG = False
@@ -96,13 +98,14 @@ def import_feeds(source):
 
 
 class feedreader:
-    def __init__(self, fname_):
+    def __init__(self, fname_, dest_db_, dest_port_):
         self.feeds = []
         self.fname = fname_
         self.feed_urls = []
         self.read_urls()
         self.construct_feeds()
-
+        self.dest_db = dest_db_
+        self.dest_port = dest_port_
 
     def read_urls(self):
         print("read urls")
@@ -157,7 +160,43 @@ class feedreader:
         # this should be returning an array of arrays of keyword,url,item objects
         return threaded_map(update_fn,self.feeds)
 
-    
+
+    def send_to_db(self,digest):
+         try:
+             r = requests.post("http://"+self.dest_db+":"+self.dest_port+"/new",json=json.dumps(digest),headers=HEADERS)
+             print(r)
+             return [1,digest["url"]]
+         except Exception as e:
+             print(e)
+             return [0,digest["url"],e]
+
+
+    def dispatch_fn(self,item):
+        print(item)
+        it = item['item']
+        url = it.url
+        
+        if url == "0.0.0.0":
+            print (json.dumps(item))
+            return 0
+        digest = { "title":it.title, "url": url, "summary": it.article.summary, "keywords": it.article.keywords, "source": tldextract.extract( url ).domain }
+        print(json.dumps(digest))
+        return self.send_to_db(digest)
+
+
+    def fast_dispatch(self,items):
+        return threaded_map(self.dispatch_fn,items)
+        
+        
+    def fast_update_and_dispatch(self):
+        def update_and_dispatch(item):
+            newitems = item.fast_update()
+            return threaded_map(self.dispatch_fn,newitems)
+        
+        return threaded_map(update_and_dispatch,self.feeds)
+        #newitems = fast_update()
+        #return fast_dispatch(newitems)
+
     def update(self):
         for feed in self.feeds:
             feed.update()

@@ -7,7 +7,7 @@ import json
 import time
 from utils import do_every, flatten
 from functools import reduce
-import ipaddress, sys, tldextract
+import ipaddress, sys
 
 from flask import Flask
 app = Flask(__name__)
@@ -38,7 +38,7 @@ LST_FILE = "shortfeeds.list"
 # it will create an "rssfeed" that polls the source url and retrieves news stories
 
 
-def send_to_db(data_):
+def send_to_db(data_,dest_ip,dest_port):
     try:
         r = requests.post("http://"+dest_ip+":"+dest_port+"/new",json=json.dumps(data_),headers=headers)
         print(r)
@@ -55,15 +55,20 @@ def periodic_update(reader):
     # we can use them to get the news
     
     print("time: ",time.strftime("%H:%M:%S"))
-    newsitems = flatten(reader.fast_update())
-    items = [n['item'] for n in newsitems ]
+    #newsitems = flatten(reader.fast_update())
+    #reader.fast_dispatch(newsitems)
     
+    responses = flatten(reader.fast_update_and_dispatch())
+    print(responses)
+    #items = [n['item'] for n in newsitems ]
+    
+    '''
     for i in range(0,len(items)):
         url = items[i].url
         digest = { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain }
         print(json.dumps(digest))
         send_to_db(digest)
-    
+    '''
     #print("\n\n\n end of round. \n\n\n")
 
         
@@ -75,7 +80,7 @@ def periodic_update(reader):
 @app.route("/")
 def startup():
     print("Start!")
-    reader = feedreader(LST_FILE)
+    reader = feedreader(LST_FILE,dest_ip, dest_port)
     feeds = reader.feeds
     periodic_update(reader)
     return "Hello World!"
