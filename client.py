@@ -8,6 +8,8 @@ import time
 from utils import do_every, flatten
 from functools import reduce
 import ipaddress, sys
+import threading, requests
+from time import sleep
 
 from flask import Flask
 app = Flask(__name__)
@@ -26,7 +28,8 @@ except Exception as e:
 #LST_FILE = "goodfeeds.list"
 LST_FILE = "shortfeeds.list"
 
-
+HOST="0.0.0.0"
+PORT=5000
 
 
 # there are three noteworthy objects for our rss reader:
@@ -70,18 +73,26 @@ def periodic_update(reader):
         send_to_db(digest)
     '''
     #print("\n\n\n end of round. \n\n\n")
-
+    #return "Hello World"
         
 #do_every(3600, periodic_update,[feeds],20)
 
 #periodic_update(feeds)
 
 
+
+
+
+reader = feedreader(LST_FILE,dest_ip, dest_port)
+
 @app.route("/")
 def startup():
     print("Start!")
-    reader = feedreader(LST_FILE,dest_ip, dest_port)
-    feeds = reader.feeds
+    #reader = feedreader(LST_FILE,dest_ip, dest_port)
+    #feeds = reader.feeds
+
+    #do_every(3600, periodic_update,[reader],20)
+
     periodic_update(reader)
     return "Hello World!"
 
@@ -89,7 +100,24 @@ def startup():
 def parseurl(url):
     return "parse url " + url
 
+@app.route("/addfeed/<url>")
+def addfeed(url):
+    return "add url" + url
 
 if __name__ == "__main__":
     print ("Hello World! Test 123")
-    app.run(debug=True,host='0.0.0.0')
+    
+    def hit_port():
+        response = requests.request("GET","http://"+HOST+":"+str(PORT))
+
+    def periodic_func():
+        sleep(30)
+        do_every(3600,hit_port,[],20)
+
+    thread = threading.Thread(target = periodic_func)
+    thread.start()
+
+    app.run(debug=True,host=HOST, port=PORT)   
+    
+    #feeds = reader.feeds
+

@@ -173,7 +173,9 @@ class feedreader:
 
 
     def dispatch_fn(self,item):
-        print(item)
+        if item == None:
+            return {}
+        
         it = item['item']
         url = it.url
         
