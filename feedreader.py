@@ -192,7 +192,7 @@ class feedreader:
     def fast_update_and_dispatch(self):
         def update_and_dispatch(feed):
             #newsitems = feed.fast_update()
-            newsitems = feed.update()
+            newsitems = list(feed.update())
             print (newsitems)
             return threaded_map(self.dispatch_fn,newsitems)
         
