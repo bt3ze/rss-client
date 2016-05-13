@@ -84,16 +84,17 @@ class rssfeed:
     def fast_update(self):
         def fetch_fn(news_item):
             if news_item.url in self.fetched_urls:
-                pass
+                return {'url':"0.0.0.0",'error':"status already fetched", 'errcode':1}
+                #pass
             else:
                 success = news_item.retrieve()
                 if success == 0:
                     print ("retrieve failed: ",news_item.url)
-                    return {"url":"0.0.0.0", "item": news_item}
+                    return {"url":"0.0.0.0", 'error':"retrieve failed", 'errcode':2, "item": news_item}
                 else:
                     self.fetched_urls.append(news_item.url)
                     print ("update keywords: ",news_item.keywords)
-                    return { "url": news_item.url, "keywords": news_item.keywords, "item":news_item }
+                    return { "url": news_item.url, "keywords": news_item.keywords, "item":news_item, 'errcode':0 }
 
         #print("Fast Update!")
         new_list = self.get_news()

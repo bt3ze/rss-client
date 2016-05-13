@@ -173,18 +173,16 @@ class feedreader:
 
 
     def dispatch_fn(self,item):
-        if item == None:
-            return {'error':"Item None"}
-        
-        it = item['item']
-        url = it.url
-        
-        if url == "0.0.0.0":
+        if item['errcode'] != 0:
+            
             print (json.dumps(item))
-            return {'error': "URL 0.0.0.0 could not retrieve article" }
-        digest = { "title":it.title, "url": url, "summary": it.article.summary, "keywords": it.article.keywords, "source": tldextract.extract( url ).domain }
-        print(json.dumps(digest))
-        return self.send_to_db(digest)
+            return item
+        else:
+            it = item['item']
+            url = it.url
+            digest = { "title":it.title, "url": url, "summary": it.article.summary, "keywords": it.article.keywords, "source": tldextract.extract( url ).domain }
+            print(json.dumps(digest))
+            return self.send_to_db(digest)
 
 
     def fast_dispatch(self,items):
