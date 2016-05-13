@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
     def periodic_func():
         sleep(30)
-        do_every(3600,hit_port,[],20)
+        do_every(120,hit_port,[],20)
 
     thread = threading.Thread(target = periodic_func)
     thread.start()

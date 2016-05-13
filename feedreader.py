@@ -174,14 +174,14 @@ class feedreader:
 
     def dispatch_fn(self,item):
         if item == None:
-            return {}
+            return {'error':"Item None"}
         
         it = item['item']
         url = it.url
         
         if url == "0.0.0.0":
             print (json.dumps(item))
-            return 0
+            return {'error': "URL 0.0.0.0 could not retrieve article" }
         digest = { "title":it.title, "url": url, "summary": it.article.summary, "keywords": it.article.keywords, "source": tldextract.extract( url ).domain }
         print(json.dumps(digest))
         return self.send_to_db(digest)
@@ -192,9 +192,10 @@ class feedreader:
         
         
     def fast_update_and_dispatch(self):
-        def update_and_dispatch(item):
-            newitems = item.fast_update()
-            return threaded_map(self.dispatch_fn,newitems)
+        def update_and_dispatch(feed):
+            newsitems = feed.fast_update()
+            print (newsitems)
+            return threaded_map(self.dispatch_fn,newsitems)
         
         return threaded_map(update_and_dispatch,self.feeds)
         #newitems = fast_update()
