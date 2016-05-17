@@ -22,7 +22,7 @@ print( "begin processing rss streams")
 #xml_feeds = []
 
 f = open(argv[1],'r')
-w = open('valid.list','w')
+#w = open('valid.list','w')
 parsable = open('parsable.list','w')
 
 
@@ -32,40 +32,30 @@ def process_line(line):
         print (line, response.status_code, response.encoding, response.headers['Content-Type'], response.history, response.links, response.url)
     
         sc = response.status_code
-        if not (sc == 404  or sc==503):
+        if (sc == 200  or sc==301):
             if sc==301:
-                line = response
+                line = response.url
             else:
                 print("good: ",line)
-                w.write(line)
+                #w.write(line)
                 
                 num_res = utils.ret_max(response.text, [parse.parseXml, parse.parseAtom, parse.parseHtml, parse.parseRss])
                 if num_res != 0:
                     print("parsable: ",line)
-                    parsable.write(line)
+                    return line
     except Exception as e :
         print (e)
-utils.threaded_map(process_line, [line for line in f],num_t=20)
+        return
 
-'''
-for line in f:
-    response = requests.request('GET',line)
-    print (line, response.status_code, response.encoding, response.headers['Content-Type'], response.history, response.links, response.url)
-    
-    sc = response.status_code
-    if not (sc == 404  or sc==503):
-        if sc==301:
-            pass
-        else:
-            w.write(line)
-
-            num_res = utils.ret_max(response.text, [parse.parseXml, parse.parseAtom, parse.parseHtml, parse.parseRss])
-            if num_res != 0:
-                parsable.write(line)
-'''
+parsables = utils.threaded_map(process_line, [line for line in f],num_t=100)
 
 f.close()
-w.close()
+
+for p in parsables:
+    if p != None:
+        parsable.write(p)
+
+#w.close()
 parsable.close()
 
 #xmlf = open('xmlfeeds.list','w')
