@@ -14,6 +14,7 @@ from time import sleep
 from flask import Flask
 app = Flask(__name__)
 
+'''
 try:
     # this just tests that the input address is valid
     ipaddr = ipaddress.ip_address(sys.argv[1])
@@ -23,6 +24,10 @@ try:
 except Exception as e:
     print(e)
     exit(1)
+'''
+
+dest_ip = sys.argv[1]
+dest_port = sys.argv[2]
 
 # this is a list of feeds that work when we request them
 #LST_FILE = "goodfeeds.list"
