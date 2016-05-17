@@ -65,7 +65,9 @@ class rssfeed:
         return self.__str__()
 
     def get_news(self):
-        news = parse.get_rss_feed(self.sourceurl, self.parsefn)
+        print(self.sourceurl)
+        print(self.parsefn)
+        (a,news) = parse.get_rss_feed(self.sourceurl, self.parsefn)
         return news
     
 

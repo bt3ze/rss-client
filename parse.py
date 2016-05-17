@@ -20,6 +20,7 @@ def get_rss_feed(url,parsefn):
     headers = {'user-agent':'bt-rss-reader/0.1'}
     try:
         response = requests.request("GET",url,headers=headers)
+        #print (response.text)
     except requests.exceptions.Timeout as e:
         print(e)
         return ""
@@ -32,7 +33,7 @@ def get_rss_feed(url,parsefn):
 
     if parsefn == 0:
         return ""
-    return parsefn(response.text)
+    return (response.url, parsefn(response.text))
 
 
 # the following parse functions operate on the response of an rss feed
@@ -52,6 +53,23 @@ def parseXml(content):
             else:
                 lst.append(newssource.newsitem(title.string,link.string,date.today()))
     return lst
+
+def parseAtom(content):
+    lst = []
+    soup = BeautifulSoup(content, "xml")
+    for item in soup.find_all("entry"):
+        #print(item)
+        link = item.find("link")
+        title = item.find("title")
+        #print(link.get("href"),title.string)
+        if link != None:
+            if not speed:
+                response = requests.request("GET",link.get("href"))
+                lst.append(newssource.newsitem(title.string,response.url,date.today()))
+            else:
+                lst.append(newssource.newsitem(title.string,link.get("href"),date.today()))
+    return lst
+
 
 
 def parseHtml_regitem(content):

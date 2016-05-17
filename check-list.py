@@ -12,20 +12,68 @@ import json
 #import urllib2
 from sys import argv
 
+import parse
+import utils
 
-print "begin processing rss streams"
 
-xml_feeds = []
 
+print( "begin processing rss streams")
+
+#xml_feeds = []
 
 f = open(argv[1],'r')
 w = open('valid.list','w')
+parsable = open('parsable.list','w')
 
-xmlf = open('xmlfeeds.list','w')
-htmlf = open('htmlfeeds.list','w')
-rssf = open('rssfeeds.list','w')
-otherf = open('otherfeeds.list','w')
 
+def process_line(line):
+    try:
+        response = requests.request('GET',line)
+        print (line, response.status_code, response.encoding, response.headers['Content-Type'], response.history, response.links, response.url)
+    
+        sc = response.status_code
+        if not (sc == 404  or sc==503):
+            if sc==301:
+                line = response
+            else:
+                print("good: ",line)
+                w.write(line)
+                
+                num_res = utils.ret_max(response.text, [parse.parseXml, parse.parseAtom, parse.parseHtml, parse.parseRss])
+                if num_res != 0:
+                    print("parsable: ",line)
+                    parsable.write(line)
+    except Exception as e :
+        print (e)
+utils.threaded_map(process_line, [line for line in f],num_t=20)
+
+'''
+for line in f:
+    response = requests.request('GET',line)
+    print (line, response.status_code, response.encoding, response.headers['Content-Type'], response.history, response.links, response.url)
+    
+    sc = response.status_code
+    if not (sc == 404  or sc==503):
+        if sc==301:
+            pass
+        else:
+            w.write(line)
+
+            num_res = utils.ret_max(response.text, [parse.parseXml, parse.parseAtom, parse.parseHtml, parse.parseRss])
+            if num_res != 0:
+                parsable.write(line)
+'''
+
+f.close()
+w.close()
+parsable.close()
+
+#xmlf = open('xmlfeeds.list','w')
+#htmlf = open('htmlfeeds.list','w')
+#rssf = open('rssfeeds.list','w')
+#otherf = open('otherfeeds.list','w')
+
+'''
 for line in f:
     response = requests.request('GET',line)
     print line, response.status_code, response.encoding, response.headers['Content-Type'], response.history, response.links, response.url
@@ -67,3 +115,4 @@ htmlf.close()
 xmlf.close()
 rssf.close()
 otherf.close()
+'''

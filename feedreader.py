@@ -23,8 +23,10 @@ DEBUG = False
 def determine_parse_fn(feed_url):
     try:
         response = requests.request("GET",feed_url,headers=HEADERS,timeout = TIMEOUT)
-        parsefn = ret_max(response.text, [parse.parseXml, parse.parseHtml, parse.parseRss])
-        return parsefn
+        print("url: ",response.url)
+        print(response.text)
+        parsefn = ret_max(response.text, [parse.parseXml, parse.parseAtom, parse.parseHtml, parse.parseRss])
+        return (response.url,parsefn)
     except requests.exceptions.Timeout as e:
         if DEBUG:
             print(feed_url,e)
@@ -123,9 +125,9 @@ class feedreader:
         
         for url in self.feed_urls:
             #print(url)
-            parsefn = determine_parse_fn(url)
+            (realurl, parsefn) = determine_parse_fn(url)
             #print(parsefn)
-            feeds.append(newssource.rssfeed(url,parsefn))
+            feeds.append(newssource.rssfeed(realurl,parsefn))
 
         self.feeds = feeds
 
@@ -139,9 +141,10 @@ class feedreader:
             #print("make feeds")
             
             def make_newssource(url):
-                parsefn = determine_parse_fn(url)
-                #print(parsefn)
-                n = newssource.rssfeed(url,parsefn)
+                (realurl, parsefn) = determine_parse_fn(url)
+                print(realurl)
+                print(parsefn)
+                n = newssource.rssfeed(realurl,parsefn)
                 return n
         
             newssources = threaded_map(make_newssource,url_list)
