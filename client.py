@@ -31,8 +31,8 @@ dest_port = sys.argv[2]
 
 # this is a list of feeds that work when we request them
 #LST_FILE = "goodfeeds.list"
-LST_FILE = "shortfeeds.list"
-#LST_FILE = "first_good_list.txt"
+#LST_FILE = "shortfeeds.list"
+LST_FILE = "first_good_list.txt"
 
 HOST="0.0.0.0"
 PORT=5000
