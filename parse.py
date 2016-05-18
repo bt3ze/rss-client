@@ -48,8 +48,11 @@ def parseXml(content):
         title = item.find("title")
         if link != None:
             if not speed:
-                response = requests.request("GET",link.string)
-                lst.append(newssource.newsitem(title.string,response.url,date.today()))
+                try:
+                    response = requests.request("GET",link.string)
+                    lst.append(newssource.newsitem(title.string,response.url,date.today()))
+                except Exception as e:
+                    print(e)
             else:
                 lst.append(newssource.newsitem(title.string,link.string,date.today()))
     return lst
@@ -64,12 +67,15 @@ def parseAtom(content):
         #print(link.get("href"),title.string)
         if link != None:
             if not speed:
-                response = requests.request("GET",link.get("href"))
-                lst.append(newssource.newsitem(title.string,response.url,date.today()))
+                try:
+                    response = requests.request("GET",link.get("href"))
+                    lst.append(newssource.newsitem(title.string,response.url,date.today()))
+                except Exception as e:
+                    print(e)
             else:
                 lst.append(newssource.newsitem(title.string,link.get("href"),date.today()))
     return lst
-
+    
 
 
 def parseHtml_regitem(content):

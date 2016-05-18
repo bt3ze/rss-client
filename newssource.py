@@ -41,19 +41,23 @@ class newsitem:
             return 0
         if not self.retrieved:
             print("retrieve: ",self.url)
-            a = self.article
-            a.download()
-            if a.html == "":
-                print("error: download failed")
-                return 0
-            a.parse()
-            a.nlp()
-            self.retrieved = 1
-            #print(self.article.keywords)
+            try:
+                a = self.article
+                a.download()
+                if a.html == "":
+                    print("error: download failed")
+                    return 0
+                    a.parse()
+                    a.nlp()
+                    self.retrieved = 1
+                    #print(self.article.keywords)
             
-            self.keywords = self.article.keywords
-            #print(self.keywords)
-            return self
+                    self.keywords = self.article.keywords
+                    #print(self.keywords)
+                    return self
+            except Exception as e:
+                print(e)
+                return 0
         else:
             return 0
         
