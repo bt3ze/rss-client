@@ -27,6 +27,8 @@ class newsitem:
 
     def __str__(self):
         #return "{ title: " +  self.title + " ; url: " + self.url + " } "
+        if self.title == None or self.url == None:
+            return "{ url: 0.0.0.0; title: bad newsitem }"
         return "{ url: " + self.url + "; title: " + self.title + " } "
         
     def __repr__(self):
@@ -59,6 +61,8 @@ class rssfeed:
         self.fetched_urls = deque([],maxlen=URL_LIST_SIZE)
 
     def __str__(self):
+        if self.sourceurl == None or self.parsefn == None:
+            return "feed: { url: bad feed, parsefn: bad feed }"
         return "feed: { url: " + self.sourceurl + " ; parsefn: " + str(self.parsefn) + " } "
 
     def __repr__(self):

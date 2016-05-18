@@ -23,10 +23,14 @@ DEBUG = False
 def determine_parse_fn(feed_url):
     try:
         response = requests.request("GET",feed_url,headers=HEADERS,timeout = TIMEOUT)
-        print("url: ",response.url)
-        print(response.text)
-        parsefn = ret_max(response.text, [parse.parseXml, parse.parseAtom, parse.parseHtml, parse.parseRss])
-        return (response.url,parsefn)
+        #print("url: ",response.url)
+        #print(response.text)
+        #parsefn = ret_max(response.text, [parse.parseXml, parse.parseAtom, parse.parseHtml, parse.parseRss])
+        parsefn = ret_max(response.text, [parse.parseXml, parse.parseAtom])
+        url = response.url
+        if url.endswith('%0A'):
+            url = url[:-3]
+        return (url,parsefn)
     except requests.exceptions.Timeout as e:
         if DEBUG:
             print(feed_url,e)
@@ -38,7 +42,7 @@ def determine_parse_fn(feed_url):
         if DEBUG:
             print(feed_url,e)
             #write_error(badfeeds,url,e)
-    return 0
+    return ("",0)
 
 
 def parse_line(l):
@@ -127,7 +131,8 @@ class feedreader:
             #print(url)
             (realurl, parsefn) = determine_parse_fn(url)
             #print(parsefn)
-            feeds.append(newssource.rssfeed(realurl,parsefn))
+            if(parsefn != 0):
+                feeds.append(newssource.rssfeed(realurl,parsefn))
 
         self.feeds = feeds
 
@@ -139,20 +144,31 @@ class feedreader:
     def extend_feeds(self,urllist):
         def make_feeds(url_list):
             #print("make feeds")
+            #feeds = []
             
             def make_newssource(url):
                 (realurl, parsefn) = determine_parse_fn(url)
-                print(realurl)
-                print(parsefn)
+                print("url :" +url +"\nrealurl: " + realurl + "\nparsefn : " + str(parsefn))
+                #print(parsefn)
+                if parsefn==0:
+                    return {'news':None,'url':"",'err':1}
+                
                 n = newssource.rssfeed(realurl,parsefn)
-                return n
-        
+                return {'news':n,'url': realurl,'err':0}
+                                
             newssources = threaded_map(make_newssource,url_list)
             return newssources
         
-        newfeeds = make_feeds(urllist)
-        self.feeds.extend(newfeeds)
-        self.feed_urls.extend(urllist)
+        newfeeds = filter(lambda x: x['err'] == 0, make_feeds(urllist))
+
+        #for n in newsfeeds:
+        #    if n.err != 1:
+        #        nfeeds.append(n.news)
+        #        nurls.append(n.url)
+        nfeeds = [n['news'] for n in newfeeds]
+        nurls = [n['url'] for n in newfeeds]
+        self.feeds.extend(nfeeds)
+        self.feed_urls.extend(nurls)
     
 
     def fast_update(self):
@@ -196,7 +212,7 @@ class feedreader:
         def update_and_dispatch(feed):
             #newsitems = feed.fast_update()
             newsitems = list(feed.update())
-            print (newsitems)
+            #print (newsitems)
             return threaded_map(self.dispatch_fn,newsitems)
         
         return threaded_map(update_and_dispatch,self.feeds)
