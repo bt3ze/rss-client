@@ -23,16 +23,16 @@ def get_rss_feed(url,parsefn):
         #print (response.text)
     except requests.exceptions.Timeout as e:
         print(e)
-        return ""
+        return ("",0)
     except requests.exceptions.TooManyRedirects as e:
         print(e)
-        return ""
+        return ("",0)
     except requests.exceptions.RequestException as e:
         print(e)
-        return ""
+        return ("",0)
 
     if parsefn == 0:
-        return ""
+        return ("",0)
     return (response.url, parsefn(response.text))
 
 

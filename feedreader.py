@@ -53,6 +53,7 @@ def write_error(errfile,data,err):
     #errfile.write(err)
 
 # this function returns a list of feed objects
+'''
 def import_feeds(source):
 
     feeds = []
@@ -101,7 +102,7 @@ def import_feeds(source):
         goodfeeds.close()
         badfeeds.close()
     return feeds
-
+'''
 
 
 class feedreader:
@@ -156,7 +157,7 @@ class feedreader:
                 n = newssource.rssfeed(realurl,parsefn)
                 return {'news':n,'url': realurl,'err':0}
                                 
-            newssources = threaded_map(make_newssource,url_list)
+            newssources = threaded_map(make_newssource,url_list,num_t=20)
             return newssources
         
         newfeeds = filter(lambda x: x['err'] == 0, make_feeds(urllist))
@@ -222,10 +223,8 @@ class feedreader:
     def update(self):
         for feed in self.feeds:
             feed.update()
-        
+
+'''
     def retrieve(self):
         self.feeds = import_feeds(self.fname)
-
-
-
-
+'''

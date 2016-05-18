@@ -35,13 +35,17 @@ class newsitem:
         return self.__str__()
 
     def retrieve(self):
+        if self.url.endswith(".mp3"):
+            print ("error: attempting to download mp3")
+            #self.retrieved = True
+            return 0
         if not self.retrieved:
             print("retrieve: ",self.url)
             a = self.article
             a.download()
             if a.html == "":
                 print("error: download failed")
-                return self
+                return 0
             a.parse()
             a.nlp()
             self.retrieved = 1
@@ -51,7 +55,7 @@ class newsitem:
             #print(self.keywords)
             return self
         else:
-            return self
+            return 0
         
 
 class rssfeed:
