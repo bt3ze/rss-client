@@ -64,6 +64,12 @@ class feedreader:
         self.dest_dbs = dest_dbs_
         self.dest_port = dest_port_
 
+    def get_feeds(self):
+        return self.feeds
+
+    def add_feed(self,url):
+        self.extend_feeds([url])
+
     def read_urls(self):
         print("read urls")
         f = open(self.fname,'r')

@@ -66,6 +66,10 @@ reader = feedreader(LST_FILE,dest_ips, dest_port)
 def isalive():
     return "hello"
 
+@app.route("/list_feeds")
+def list_feeds():
+    return str(reader.get_feeds())
+
 @app.route("/")
 def startup():
     print("Start!")
@@ -81,9 +85,10 @@ def startup():
 def parseurl(url):
     return "parse url " + url
 
-@app.route("/addfeed/<url>")
-def addfeed(url):
-    return "add url" + url
+@app.route("/addfeed/<path:code>")
+def addfeed(code):
+    reader.add_feed(code)
+    return "add url " + code
 
 if __name__ == "__main__":
     print ("Hello World! Test 123")
@@ -97,7 +102,7 @@ if __name__ == "__main__":
 
     thread = threading.Thread(target = periodic_func)
     thread.start()
-
+    
     app.run(debug=True,host=HOST, port=PORT)   
     
     #feeds = reader.feeds
