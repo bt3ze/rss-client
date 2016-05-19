@@ -2130,7 +2130,6 @@ http://www.carrotsandkids.com/atom.xml
 http://www.corrieredellosport.it/rss/primo_piano.xml
 http://www.cosmopolitan.co.uk/?theme=rss
 http://www.cpasuccess.com/rss.xml
-http://www.cpasuccess.com/atom.xml
 http://www.contentmasteryguide.com/atom.xml
 http://www.crazedparent.org/atom.xml
 http://www.crossfitsantacruz.com/crossfit_santa_cruz/atom.xml

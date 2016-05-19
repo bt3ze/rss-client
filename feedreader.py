@@ -68,7 +68,10 @@ class feedreader:
         return self.feeds
 
     def add_feed(self,url):
-        self.extend_feeds([url])
+        if url not in self.feed_urls:
+            self.extend_feeds([url])
+            return True
+        return False
 
     def remove_feed(self,url):
         removed = False
@@ -120,7 +123,7 @@ class feedreader:
                     return {'news':None,'url':"",'err':1}
                 
                 n = newssource.rssfeed(realurl,parsefn)
-                return {'news':n,'url': realurl,'err':0}
+                return {'news':n,'url':url,'realurl': realurl,'err':0}
                                 
             newssources = threaded_map(make_newssource,url_list,num_t=20)
             return newssources
@@ -133,8 +136,10 @@ class feedreader:
         #        nurls.append(n.url)
         nfeeds = [n['news'] for n in newfeeds]
         nurls = [n['url'] for n in newfeeds]
+        nrurls = [n['realurl'] for n in newfeeds]
         self.feeds.extend(nfeeds)
         self.feed_urls.extend(nurls)
+        self.feed_urls.extend(nrurls)
     
 
     def fast_update(self):
