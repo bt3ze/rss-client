@@ -14,7 +14,7 @@ from utils import threaded_map, apply_max, ret_max
 import queue
 
 #HEADERS = {'user-agent':'bt-rss-reader/0.1','Content-type':'application/json','Accept':'text/plain'}
-HEADERS = {'Content-type':'application/json','Accept':'text/plain'}
+HEADERS = {'user-agent':'Bot - bt-rss-reader/0.1; bterner@umail.ucsb.edu','Content-type':'application/json','Accept':'text/plain'}
 #headers={}
 TIMEOUT = 0.9
 LST_FILE = "feeds.list"
@@ -201,7 +201,8 @@ class feedreader:
             it = item['item']
             url = it.url
             digest = { "title":it.title, "url": url, "summary": it.article.summary, "keywords": it.article.keywords, "source": tldextract.extract( url ).domain }
-            print(json.dumps(digest))
+            #print(json.dumps(digest))
+            print(digest)
             return self.send_to_db(digest)
 
 
