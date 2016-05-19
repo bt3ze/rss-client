@@ -90,6 +90,10 @@ def addfeed(code):
     reader.add_feed(code)
     return "add url " + code
 
+@app.route("/removefeed/<path:code>")
+def removefeed(code):
+    return "remove feed: " + code + " " + str(reader.remove_feed(code))
+
 if __name__ == "__main__":
     print ("Hello World! Test 123")
     

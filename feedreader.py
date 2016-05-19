@@ -70,6 +70,16 @@ class feedreader:
     def add_feed(self,url):
         self.extend_feeds([url])
 
+    def remove_feed(self,url):
+        removed = False
+        for f in self.feeds:
+            if f.sourceurl == url:
+                self.feeds.remove(f)
+                removed = True
+                break
+            
+        return removed
+
     def read_urls(self):
         print("read urls")
         f = open(self.fname,'r')
