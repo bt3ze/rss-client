@@ -52,67 +52,16 @@ def write_error(errfile,data,err):
     errfile.write(data)
     #errfile.write(err)
 
-# this function returns a list of feed objects
-'''
-def import_feeds(source):
-
-    feeds = []
-    
-    if DEBUG:
-        goodfeeds = open("goodfeeds.list",'w')
-        badfeeds = open("badfeeds.list",'w')
-
-    f = open(source,'r')
-    for line in f.readlines():
-    
-        url = parse_line(line)
-        #print(line)
-        
-        if "nytimes" in line or "forbes" in line:
-            continue
-
-        try:
-            response = requests.request("GET",url,headers=HEADERS,timeout = TIMEOUT)
-            (news,parsefn) = apply_max(response.text, [parse.parseXml, parse.parseHtml, parse.parseRss])
-        except requests.exceptions.Timeout as e:
-            if DEBUG:
-                write_error(badfeeds,url,e)
-            continue
-        except requests.exceptions.TooManyRedirects as e:
-            if DEBUG:
-                write_error(badfeeds,url,e)
-            continue
-        except requests.exceptions.RequestException as e:
-            if DEBUG:
-                write_error(badfeeds,url,e)
-            continue
-
-        #print("len news: ",len(news))
-        if len(news) > 0:
-            feeds.append(newssource.rssfeed(url,parsefn))
-            if DEBUG:
-                goodfeeds.write(line)
-        else: # len(news) ==0
-            if DEBUG:
-                badfeeds.write(line)
-            pass
-
-    f.close()
-    if DEBUG:
-        goodfeeds.close()
-        badfeeds.close()
-    return feeds
-'''
 
 
 class feedreader:
-    def __init__(self, fname_, dest_db_, dest_port_):
+    def __init__(self, fname_, dest_dbs_, dest_port_):
         self.feeds = []
         self.fname = fname_
         self.feed_urls = []
         self.read_urls()
         self.construct_feeds()
-        self.dest_db = dest_db_
+        self.dest_dbs = dest_dbs_
         self.dest_port = dest_port_
 
     def read_urls(self):
@@ -183,13 +132,17 @@ class feedreader:
 
 
     def send_to_db(self,digest):
-         try:
-             r = requests.post("http://"+self.dest_db+":"+self.dest_port+"/new",json=json.dumps(digest),headers=HEADERS, timeout=TIMEOUT)
-             print(r)
-             return [1,digest["url"]]
-         except Exception as e:
-             print(e)
-             return [0,digest["url"],e]
+        def sendfn(dest_db, dest_port,digest):
+            try:
+                r1 = requests.post("http://"+dest_db+":"+dest_port+"/new",json=json.dumps(digest),headers=HEADERS, timeout=TIMEOUT)
+                print(r1)
+                return [1,digest["url"],dest_db]
+            except Exception as e:
+                print(e)
+                return [0,digest["url"],dest_db,e]
+
+        results = list( map(lambda x: sendfn(x,self.dest_port,digest), self.dest_dbs) )
+        return results
 
 
     def dispatch_fn(self,item):

@@ -26,13 +26,13 @@ except Exception as e:
     exit(1)
 '''
 
-dest_ip = sys.argv[1]
-dest_port = sys.argv[2]
+dest_port = sys.argv[1]
+dest_ips = sys.argv[2:]
 
 # this is a list of feeds that work when we request them
 #LST_FILE = "goodfeeds.list"
-#LST_FILE = "shortfeeds.list"
-LST_FILE = "first_good_list.txt"
+LST_FILE = "shortfeeds.list"
+#LST_FILE = "first_good_list.txt"
 
 HOST="0.0.0.0"
 PORT=5000
@@ -47,18 +47,6 @@ PORT=5000
 # it will create an "rssfeed" that polls the source url and retrieves news stories
 
 
-def send_to_db(data_,dest_ip,dest_port):
-    try:
-        r = requests.post("http://"+dest_ip+":"+dest_port+"/new",json=json.dumps(data_),headers=headers)
-        print(r)
-        return 1
-    except Exception as e:
-        print(e)
-        return 0
-
-#print("feeds: ",feeds)
-
-
 def periodic_update(reader):
     # now we have a list of rssfeeds in the "feeds" variable
     # we can use them to get the news
@@ -69,27 +57,14 @@ def periodic_update(reader):
     
     responses = flatten(reader.fast_update_and_dispatch())
     print(responses)
-    #items = [n['item'] for n in newsitems ]
-    
-    '''
-    for i in range(0,len(items)):
-        url = items[i].url
-        digest = { "title":items[i].title, "url": url, "summary": items[i].article.summary, "keywords": items[i].article.keywords, "source": tldextract.extract( url ).domain }
-        print(json.dumps(digest))
-        send_to_db(digest)
-    '''
-    #print("\n\n\n end of round. \n\n\n")
-    #return "Hello World"
-        
-#do_every(3600, periodic_update,[feeds],20)
-
-#periodic_update(feeds)
 
 
 
+reader = feedreader(LST_FILE,dest_ips, dest_port)
 
-
-reader = feedreader(LST_FILE,dest_ip, dest_port)
+@app.route("/isalive")
+def isalive():
+    return "hello"
 
 @app.route("/")
 def startup():
@@ -118,7 +93,7 @@ if __name__ == "__main__":
 
     def periodic_func():
         sleep(30)
-        do_every(7200,hit_port,[],200)
+        do_every(7200,hit_port,[],200) #2 hours
 
     thread = threading.Thread(target = periodic_func)
     thread.start()

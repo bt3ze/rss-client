@@ -1521,12 +1521,6 @@ http://musicproducersforum.wordpress.com/feed/
 http://myjourneywithaids.wordpress.com/feed/
 http://muslimmatters.org/feed/
 http://muslimahmediawatch.org/feed/
-http://my.opera.com/chooseopera/xml/rss/blog/
-http://my.opera.com/community/xml/rss/blog/
-http://my.opera.com/operamini/xml/atom/blog/
-http://my.opera.com/desktopteam/xml/rss/blog/
-http://my.opera.com/desktopteam/xml/atom/blog/
-http://my.opera.com/tamil/xml/rss/blog/
 http://mzvirgo.com/feed/
 http://nahright.com/news/feed/
 http://naldzgraphics.net/feed/
@@ -1537,7 +1531,6 @@ http://mysterytrivia.wordpress.com/feed/
 http://neurodudes.com/feed/
 http://mysql.com/mysql.rss
 http://nanobugle.wordpress.com/feed/
-http://my.opera.com/core/xml/rss/blog/
 http://newoldage.blogs.nytimes.com/feed/
 http://nearabroad.wordpress.com/feed/
 http://news.travel.aol.com/rss.xml
