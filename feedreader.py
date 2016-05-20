@@ -179,7 +179,7 @@ class feedreader:
             try: 
                 print(digest)
             except Exception as e:
-                pass
+                print(e)
             return self.send_to_db(digest)
 
 
