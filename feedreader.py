@@ -58,7 +58,7 @@ class feedreader:
     def __init__(self, fname_, dest_dbs_, dest_port_):
         self.feeds = []
         self.fname = fname_
-        self.feed_urls = []
+        self.feed_urls = set()
         self.read_urls()
         self.construct_feeds()
         self.dest_dbs = dest_dbs_
@@ -88,7 +88,7 @@ class feedreader:
         f = open(self.fname,'r')
         for line in f.readlines():
             url = parse_line(line)
-            self.feed_urls.append(url)
+            self.feed_urls.add(url)
             print(url),
         f.close()
 
@@ -138,8 +138,8 @@ class feedreader:
         nurls = [n['url'] for n in newfeeds]
         nrurls = [n['realurl'] for n in newfeeds]
         self.feeds.extend(nfeeds)
-        self.feed_urls.extend(nurls)
-        self.feed_urls.extend(nrurls)
+        self.feed_urls.update(nurls)
+        self.feed_urls.update(nrurls)
     
 
     def fast_update(self):
