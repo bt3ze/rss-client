@@ -47,14 +47,14 @@ class newsitem:
                 if a.html == "":
                     print("error: download failed")
                     return 0
-                    a.parse()
-                    a.nlp()
-                    self.retrieved = 1
-                    #print(self.article.keywords)
-            
-                    self.keywords = self.article.keywords
-                    #print(self.keywords)
-                    return self
+                a.parse()
+                a.nlp()
+                self.retrieved = 1
+                #print(self.article.html)
+                
+                self.keywords = self.article.keywords
+                #print(self.keywords)
+                return self
             except Exception as e:
                 print(e)
                 return 0
