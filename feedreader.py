@@ -8,6 +8,7 @@ import datetime, time
 import newssource
 import parse
 import tldextract, json
+from random import shuffle
 
 from utils import threaded_map, apply_max, ret_max
 
@@ -83,6 +84,9 @@ class feedreader:
             
         return removed
 
+    def shuffle_feeds(self):
+        shuffle(self.feeds)
+
     def read_urls(self):
         print("read urls")
         f = open(self.fname,'r')
@@ -140,7 +144,7 @@ class feedreader:
         self.feeds.extend(nfeeds)
         self.feed_urls.update(nurls)
         self.feed_urls.update(nrurls)
-    
+        self.shuffle_feeds()
 
     def fast_update(self):
         #print("fast update")
